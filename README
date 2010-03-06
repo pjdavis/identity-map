@@ -1,0 +1,39 @@
+IdentityMap
+===========
+
+1. Install the Plugin (ruby script/plugin install http://github.com/pjdavis/identity_map.git)
+
+2. Start Your Application
+
+3. ???
+
+4. Profit!
+
+Example
+=======
+
+Rehearsal ------------------------------------
+   0.540000   0.020000   0.560000 (  0.631249)
+--------------------------- total: 0.560000sec
+
+       user     system      total        real
+   0.410000   0.010000   0.420000 (  0.465812)
+
+Objects:
+Warmup: 30332 allocations | 1237329 bytes
+Actual: 2405 allocations | 84129 bytes
+
+===============================================
+Rehearsal ------------------------------------
+   1.540000   0.070000   1.610000 (  1.937447)
+--------------------------- total: 1.610000sec
+
+       user     system      total        real
+   1.430000   0.070000   1.500000 (  1.823009)
+
+Objects:
+Warmup: 27709 allocations | 1100864 bytes
+Actual: 14430 allocations | 502673 bytes
+
+For the inspiration/base code, check out: http://www.harukizaemon.com/2006/09/activerecord-identity-map-for-rails.html
+Copyright (c) 2010 [PJ Davis], released under the CC0 1.0 Universal license.
