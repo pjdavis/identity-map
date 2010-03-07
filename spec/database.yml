@@ -1,0 +1,21 @@
+sqlite:
+  :adapter: sqlite
+  :database: vendor/plugins/identity_map/spec/db/identity_map_plugin.sqlite.db
+
+sqlite3:
+  :adapter: sqlite3
+  :database: vendor/plugins/identity_map/spec/db/identity_map_plugin.sqlite3.db
+
+postgresql:
+  :adapter: postgresql
+  :username: postgres
+  :password: postgres
+  :database: identity_map_plugin_test
+  :min_messages: ERROR
+
+mysql:
+  :adapter: mysql
+  :host: localhost
+  :username: root
+  :password:
+  :database: identity_map_plugin_test
