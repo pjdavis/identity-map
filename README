@@ -12,28 +12,87 @@ IdentityMap
 Example
 =======
 
+Start a new Rails Project with 3 Models
+
+class Account < ActiveRecord::Base
+  has_many :contacts
+end
+
+class Contact < ActiveRecord::Base
+  has_many :emails
+  belongs_to :account
+end
+
+class Email < ActiveRecord::Base
+  belongs_to :contact
+end
+
+Then, seed some data:
+
+a = Account.create(:account_number => '50303')
+50.times do
+	c = a.contacts.create(:name => "billy")
+	10.times do
+		c.emails.create(:address => "bobby@jones.com")
+	end
+end
+
+Start up a console and test.
+# you'll have to manually create the cache in the console
+Thread.current['identity_map'] = Cache.new
+
+bench do
+	Account.first.contacts(:include => :emails).map{|c| c.emails}.flatten.each do |em|
+		em.contact.account.account_number
+	end
+end
+instances do #see below
+	Account.first.contacts(:include => :emails).map{|c| c.emails}.flatten.each do |em|
+		em.contact.account.account_number
+	end
+end
+
+Without:
 Rehearsal ------------------------------------
-   0.540000   0.020000   0.560000 (  0.631249)
---------------------------- total: 0.560000sec
+  61.140000   2.990000  64.130000 ( 65.257311)
+-------------------------- total: 64.130000sec
 
        user     system      total        real
-   0.410000   0.010000   0.420000 (  0.465812)
+  61.320000   2.980000  64.300000 ( 65.886182)
 
 Objects:
-Warmup: 30332 allocations | 1237329 bytes
-Actual: 2405 allocations | 84129 bytes
+Warmup: 394645 allocations | 17361219 bytes
+Actual: 394647 allocations | 17361212 bytes
 
-===============================================
+With:
 Rehearsal ------------------------------------
-   1.540000   0.070000   1.610000 (  1.937447)
---------------------------- total: 1.610000sec
+   2.710000   0.060000   2.770000 (  2.788158)
+--------------------------- total: 2.770000sec
 
        user     system      total        real
-   1.430000   0.070000   1.500000 (  1.823009)
+   2.320000   0.040000   2.360000 (  2.389007)
 
-Objects:
-Warmup: 27709 allocations | 1100864 bytes
-Actual: 14430 allocations | 502673 bytes
+ Objects:
+ Warmup: 15170 allocations | 255986 bytes
+ Actual: 15172 allocations | 255975 bytes
+
+
+
+# instances method
+def instances(&block)
+	GC.enable_stats
+	GC.clear_stats
+	block.call
+	warmup_objs = GC.num_allocations
+	warmup_bytes = GC.allocated_size
+	GC.clear_stats
+	block.call
+	puts "Objects:"
+	puts "Warmup: #{warmup_objs} allocations | #{warmup_bytes} bytes"
+	puts "Actual: #{GC.num_allocations} allocations | #{GC.allocated_size} bytes"
+end
+
+
 
 For the inspiration/base code, check out: http://www.harukizaemon.com/2006/09/activerecord-identity-map-for-rails.html
 Copyright (c) 2010 [PJ Davis], released under the CC0 1.0 Universal license.
