@@ -21,7 +21,7 @@ describe "Customers" do
 	it "should work for belongs_to assocations" do
 		d1 = Customer.first
 		d2 = PhoneNumber.first.customer
-		d1.__id__.should == d2.__id__
+		d1.__id__.should == d2.target.__id__
 	end
 	
 	it "should work for creating objects" do
